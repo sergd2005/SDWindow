@@ -160,28 +160,27 @@ typedef enum
     CGRect bottomFrame = horizontalDistanceFrame.origin.y > leftBorder.origin.y ? horizontalDistanceFrame : leftBorder;
     CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
     CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
-    CGRect verticalBorderFrame = [self verticalDistanceFrameBetweenTopBorder:topFrameBottomBorder
-                                                             andBottomBorder:bottomFrameTopBorder];
+    
     [self addDistanceViewWithFrame:horizontalDistanceFrame];
-    [self addDistanceViewWithFrame:verticalBorderFrame];
+    
+    if (topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y)
+        [self addDistanceViewWithFrame:
+         [self verticalDistanceFrameBetweenTopBorder:topFrameBottomBorder
+                                     andBottomBorder:bottomFrameTopBorder]];
 }
 
 - (CGRect)verticalDistanceFrameBetweenTopBorder:(CGRect)topBorder
                                 andBottomBorder:(CGRect)bottomBorder
 {
     CGFloat xPosition = 0;
-    if (topBorder.origin.x == bottomBorder.origin.x)
-    {
-        xPosition = topBorder.origin.x;
-    } else
-    {
-        CGRect leftFrame = topBorder.origin.x < bottomBorder.origin.x ? topBorder : bottomBorder;
-        CGRect rightFrame = topBorder.origin.x > bottomBorder.origin.x ? topBorder : bottomBorder;
-        CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
-        CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
-        xPosition = (rightFrameLeftBorder.origin.x - leftFrameRightBorder.origin.x)/2 +
-        rightFrameLeftBorder.origin.x;
-    }
+    CGRect leftFrame = topBorder.origin.x < bottomBorder.origin.x ? topBorder : bottomBorder;
+    CGRect rightFrame = topBorder.origin.x > bottomBorder.origin.x ? topBorder : bottomBorder;
+    CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
+    CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
+    xPosition = leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x ?
+    ((rightFrameLeftBorder.origin.x - leftFrameRightBorder.origin.x)/2 +
+     rightFrameLeftBorder.origin.x) :
+    rightFrameLeftBorder.origin.x;
     return CGRectMake(xPosition,
                       topBorder.origin.y,
                       1,
@@ -192,27 +191,14 @@ typedef enum
                                     andRightBorder:(CGRect)rightBorder
 {
     CGFloat yPosition = 0;
-    if (leftBorder.origin.y == rightBorder.origin.y)
-    {
-        yPosition = leftBorder.origin.y;
-    }
-    else
-    {
-        CGRect topFrame = leftBorder.origin.y < rightBorder.origin.y ? leftBorder : rightBorder;
-        CGRect bottomFrame = leftBorder.origin.y > rightBorder.origin.y ? leftBorder : rightBorder;
-        CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
-        CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
-        if (topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y)
-        {
-            yPosition = (bottomFrameTopBorder.origin.y - topFrameBottomBorder.origin.y)/2 +
-            topFrameBottomBorder.origin.y;
-        }
-        else
-        {
-            CGRect bottomFrameBottomBorder = [self borderRect:SDBorderTypeBottom
-                                                     fromRect:bottomFrame];
-        }
-    }
+    CGRect topFrame = leftBorder.origin.y < rightBorder.origin.y ? leftBorder : rightBorder;
+    CGRect bottomFrame = leftBorder.origin.y > rightBorder.origin.y ? leftBorder : rightBorder;
+    CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
+    CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
+    yPosition = topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y ?
+    ((bottomFrameTopBorder.origin.y - topFrameBottomBorder.origin.y)/2 +
+     topFrameBottomBorder.origin.y) :
+    bottomFrameTopBorder.origin.y;
     return CGRectMake(leftBorder.origin.x,
                       yPosition,
                       rightBorder.origin.x - leftBorder.origin.x,
