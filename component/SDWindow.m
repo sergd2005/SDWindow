@@ -52,7 +52,8 @@ typedef enum
     CGRect locationInView = view.frame;
     while (view.superview.superview)
     {
-        locationInView = [view.superview.superview convertRect:locationInView fromView:view.superview];
+        locationInView = [view.superview.superview convertRect:locationInView
+                                                      fromView:view.superview];
         view = view.superview;
     }
     return locationInView;
@@ -88,6 +89,7 @@ typedef enum
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
+    if (!self.enabled) return;
     [touches enumerateObjectsUsingBlock:^(UITouch * _Nonnull touch, BOOL * _Nonnull stop)
      {
          CGPoint locationInWindow = [touch locationInView:self];
@@ -114,8 +116,8 @@ typedef enum
     CGRect leftFrame = frame1.origin.x <= frame2.origin.x ? frame1 : frame2;
     CGRect rightFrame = frame1.origin.x > frame2.origin.x ? frame1 : frame2;
     
-    //    CGRect leftBorderOfLeftFrame = [self borderRect:SDBorderTypeLeft
-    //                                           fromRect:leftFrame];
+    CGRect leftBorderOfLeftFrame = [self borderRect:SDBorderTypeLeft
+                                           fromRect:leftFrame];
     CGRect rightBorderOfLeftFrame = [self borderRect:SDBorderTypeRight
                                             fromRect:leftFrame];
     CGRect leftBorderOfRightFrame = [self borderRect:SDBorderTypeLeft
@@ -128,25 +130,91 @@ typedef enum
     {
         // in that case we build single distance view between
         // rightBorderOfLeftFrame and leftBorderOfRightFrame
-        CGRect frame = [self horizontalDistanceFrameBetweenLeftBorder:rightBorderOfLeftFrame
-                                                       andRightBorder:leftBorderOfRightFrame];
-        [self addDistanceViewWithFrame:frame];
+        [self addHorizontalDistanceViewsBetweenLeftBorder:rightBorderOfLeftFrame
+                                           andRightBorder:leftBorderOfRightFrame];
     }
     else
-    {   // case when frames intersect horizontally
-        // we handle case only when left side frame contains right side frame horizontally
-        if (rightBorderOfRightFrame.origin.x <= rightBorderOfLeftFrame.origin.x)
-        {
-            
-        }
+    {   // case when frames intersecting horizontally
+        // in this case we add distance views between
+        // leftBorderOfLeftFrame and leftBorderOfRightFrame
+        // rightBorderOfLeftFrame and rightBorderOfRightFrame
+        [self addHorizontalDistanceViewsBetweenLeftBorder:leftBorderOfLeftFrame
+                                           andRightBorder:leftBorderOfRightFrame];
+        // determine layout of right borders
+        CGRect leftBorder =
+        rightBorderOfLeftFrame.origin.x <= rightBorderOfRightFrame.origin.x ?
+        rightBorderOfLeftFrame : rightBorderOfRightFrame;
+        CGRect rightBorder = rightBorderOfLeftFrame.origin.x > rightBorderOfRightFrame.origin.x ?
+        rightBorderOfLeftFrame : rightBorderOfRightFrame;
+        [self addHorizontalDistanceViewsBetweenLeftBorder:leftBorder
+                                           andRightBorder:rightBorder];
     }
+}
+
+- (void)addHorizontalDistanceViewsBetweenLeftBorder:(CGRect)leftBorder
+                                     andRightBorder:(CGRect)rightBorder
+{
+    CGRect horizontalDistanceFrame = [self horizontalDistanceFrameBetweenLeftBorder:leftBorder
+                                                                     andRightBorder:rightBorder];
+    CGRect topFrame = horizontalDistanceFrame.origin.y <= leftBorder.origin.y ? horizontalDistanceFrame : leftBorder;
+    CGRect bottomFrame = horizontalDistanceFrame.origin.y > leftBorder.origin.y ? horizontalDistanceFrame : leftBorder;
+    CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
+    CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
+    CGRect verticalBorderFrame = [self verticalDistanceFrameBetweenTopBorder:topFrameBottomBorder
+                                                             andBottomBorder:bottomFrameTopBorder];
+    [self addDistanceViewWithFrame:horizontalDistanceFrame];
+    [self addDistanceViewWithFrame:verticalBorderFrame];
+}
+
+- (CGRect)verticalDistanceFrameBetweenTopBorder:(CGRect)topBorder
+                                andBottomBorder:(CGRect)bottomBorder
+{
+    CGFloat xPosition = 0;
+    if (topBorder.origin.x == bottomBorder.origin.x)
+    {
+        xPosition = topBorder.origin.x;
+    } else
+    {
+        CGRect leftFrame = topBorder.origin.x < bottomBorder.origin.x ? topBorder : bottomBorder;
+        CGRect rightFrame = topBorder.origin.x > bottomBorder.origin.x ? topBorder : bottomBorder;
+        CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
+        CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
+        xPosition = (rightFrameLeftBorder.origin.x - leftFrameRightBorder.origin.x)/2 +
+        rightFrameLeftBorder.origin.x;
+    }
+    return CGRectMake(xPosition,
+                      topBorder.origin.y,
+                      1,
+                      bottomBorder.origin.y - topBorder.origin.y);
 }
 
 - (CGRect)horizontalDistanceFrameBetweenLeftBorder:(CGRect)leftBorder
                                     andRightBorder:(CGRect)rightBorder
 {
+    CGFloat yPosition = 0;
+    if (leftBorder.origin.y == rightBorder.origin.y)
+    {
+        yPosition = leftBorder.origin.y;
+    }
+    else
+    {
+        CGRect topFrame = leftBorder.origin.y < rightBorder.origin.y ? leftBorder : rightBorder;
+        CGRect bottomFrame = leftBorder.origin.y > rightBorder.origin.y ? leftBorder : rightBorder;
+        CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
+        CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
+        if (topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y)
+        {
+            yPosition = (bottomFrameTopBorder.origin.y - topFrameBottomBorder.origin.y)/2 +
+            topFrameBottomBorder.origin.y;
+        }
+        else
+        {
+            CGRect bottomFrameBottomBorder = [self borderRect:SDBorderTypeBottom
+                                                     fromRect:bottomFrame];
+        }
+    }
     return CGRectMake(leftBorder.origin.x,
-                      MIN(CGRectGetMidY(leftBorder), CGRectGetMidY(rightBorder)),
+                      yPosition,
                       rightBorder.origin.x - leftBorder.origin.x,
                       1);
 }
@@ -156,16 +224,28 @@ typedef enum
     CGRect borderToReturn = CGRectZero;
     switch (borderType) {
         case SDBorderTypeLeft:
-            borderToReturn = CGRectMake(rect.origin.x, rect.origin.y, 1, rect.size.height);
+            borderToReturn = CGRectMake(rect.origin.x,
+                                        rect.origin.y,
+                                        1,
+                                        rect.size.height);
             break;
         case SDBorderTypeRight:
-            borderToReturn = CGRectMake(rect.origin.x + rect.size.width, rect.origin.y, 1, rect.size.height);
+            borderToReturn = CGRectMake(rect.origin.x + rect.size.width,
+                                        rect.origin.y,
+                                        1,
+                                        rect.size.height);
             break;
         case SDBorderTypeTop:
-            borderToReturn = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, 1);
+            borderToReturn = CGRectMake(rect.origin.x,
+                                        rect.origin.y,
+                                        rect.size.width,
+                                        1);
             break;
         case SDBorderTypeBottom:
-            borderToReturn = CGRectMake(rect.origin.x, rect.origin.y + rect.size.height, rect.size.width, 1);
+            borderToReturn = CGRectMake(rect.origin.x,
+                                        rect.origin.y + rect.size.height,
+                                        rect.size.width,
+                                        1);
             break;
         default:
             break;
