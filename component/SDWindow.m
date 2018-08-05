@@ -106,6 +106,50 @@ typedef enum
     {
         [self updateHorizontalDistanceViewsBetweenView1:selectionViews[i]
                                                andView2:selectionViews[i + 1]];
+        [self updateVericalDistanceViewsBetweenView1:selectionViews[i]
+                                            andView2:selectionViews[i + 1]];
+    }
+}
+
+- (void)updateVericalDistanceViewsBetweenView1:(UIView *)view1 andView2:(UIView *)view2
+{
+    CGRect frame1 = view1.frame;
+    CGRect frame2 = view2.frame;
+    CGRect topFrame = frame1.origin.y <= frame2.origin.y ? frame1 : frame2;
+    CGRect bottomFrame = frame1.origin.y > frame2.origin.y ? frame1 : frame2;
+    
+    CGRect topBorderOfTopFrame = [self borderRect:SDBorderTypeTop
+                                         fromRect:topFrame];
+    CGRect bottomBorderOfTopFrame = [self borderRect:SDBorderTypeBottom
+                                            fromRect:topFrame];
+    CGRect topBorderOfBottomFrame = [self borderRect:SDBorderTypeTop
+                                            fromRect:bottomFrame];
+    CGRect bottomBorderOfBottomFrame = [self borderRect:SDBorderTypeBottom
+                                               fromRect:bottomFrame];
+    
+    // case when frames do not intersect vertically
+    if (bottomBorderOfTopFrame.origin.y <= topBorderOfBottomFrame.origin.y)
+    {
+        // in that case we build single distance view between
+        // rightBorderOfLeftFrame and leftBorderOfRightFrame
+        [self addVerticalDistanceViewsBetweenTopBorder:bottomBorderOfTopFrame
+                                       andBottomBorder:topBorderOfBottomFrame];
+    }
+    else
+    {   // case when frames intersecting horizontally
+        // in this case we add distance views between
+        // leftBorderOfLeftFrame and leftBorderOfRightFrame
+        // rightBorderOfLeftFrame and rightBorderOfRightFrame
+        [self addVerticalDistanceViewsBetweenTopBorder:topBorderOfTopFrame
+                                       andBottomBorder:topBorderOfBottomFrame];
+        // determine layout of right borders
+        CGRect topBorder =
+        bottomBorderOfTopFrame.origin.y <= bottomBorderOfBottomFrame.origin.y ?
+        bottomBorderOfTopFrame : bottomBorderOfBottomFrame;
+        CGRect bottomBorder = bottomBorderOfTopFrame.origin.y > bottomBorderOfBottomFrame.origin.y ?
+        bottomBorderOfTopFrame : bottomBorderOfBottomFrame;
+        [self addVerticalDistanceViewsBetweenTopBorder:topBorder
+                                       andBottomBorder:bottomBorder];
     }
 }
 
@@ -161,6 +205,31 @@ typedef enum
                                              andBorder:leftBorder];
     [self addBordersBetweenHorizontalDistanceViewFrame:horizontalDistanceFrame
                                              andBorder:rightBorder];
+}
+
+- (void)addVerticalDistanceViewsBetweenTopBorder:(CGRect)topBorder
+                                 andBottomBorder:(CGRect)bottomBorder
+{
+    CGRect verticalDistanceFrame = [self verticalDistanceFrameBetweenTopBorder:topBorder
+                                                               andBottomBorder:bottomBorder];
+    [self addDistanceViewWithFrame:verticalDistanceFrame];
+    [self addBordersBetweenHorizontalDistanceViewFrame:verticalDistanceFrame
+                                             andBorder:topBorder];
+    [self addBordersBetweenHorizontalDistanceViewFrame:verticalDistanceFrame
+                                             andBorder:bottomBorder];
+}
+
+- (void)addBordersBetweenVerticalDistanceViewFrame:(CGRect)verticalDistanceViewFrame
+                                         andBorder:(CGRect)border
+{
+    CGRect leftFrame = verticalDistanceViewFrame.origin.x <= border.origin.x ? verticalDistanceViewFrame : border;
+    CGRect rightFrame = verticalDistanceViewFrame.origin.x > border.origin.x ? verticalDistanceViewFrame : border;
+    CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
+    CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
+    if (leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x)
+        [self addDistanceViewWithFrame:
+         [self horizontalDistanceFrameBetweenLeftBorder:leftFrameRightBorder
+                                         andRightBorder:rightFrameLeftBorder]];
 }
 
 - (void)addBordersBetweenHorizontalDistanceViewFrame:(CGRect)horizontalDistanceViewFrame
