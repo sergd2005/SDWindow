@@ -198,6 +198,7 @@ typedef enum
 - (void)addHorizontalDistanceViewsBetweenLeftBorder:(CGRect)leftBorder
                                      andRightBorder:(CGRect)rightBorder
 {
+    if (leftBorder.origin.x == rightBorder.origin.x) return;
     CGRect horizontalDistanceFrame = [self horizontalDistanceFrameBetweenLeftBorder:leftBorder
                                                                      andRightBorder:rightBorder];
     [self addDistanceViewWithFrame:horizontalDistanceFrame];
@@ -210,6 +211,7 @@ typedef enum
 - (void)addVerticalDistanceViewsBetweenTopBorder:(CGRect)topBorder
                                  andBottomBorder:(CGRect)bottomBorder
 {
+    if (topBorder.origin.y == bottomBorder.origin.y) return;
     CGRect verticalDistanceFrame = [self verticalDistanceFrameBetweenTopBorder:topBorder
                                                                andBottomBorder:bottomBorder];
     [self addDistanceViewWithFrame:verticalDistanceFrame];
