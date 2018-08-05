@@ -30,6 +30,7 @@
 		4E2A8AFD2116828500290C02 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		4E2A8B05211682C100290C02 /* SDWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SDWindow.h; path = component/SDWindow.h; sourceTree = SOURCE_ROOT; };
 		4E2A8B06211682C100290C02 /* SDWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SDWindow.m; path = component/SDWindow.m; sourceTree = SOURCE_ROOT; };
+		4E2A8B082116850100290C02 /* notes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = notes.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +63,7 @@
 		4E2A8AF22116828500290C02 /* testapp */ = {
 			isa = PBXGroup;
 			children = (
+				4E2A8B082116850100290C02 /* notes.h */,
 				4E2A8B05211682C100290C02 /* SDWindow.h */,
 				4E2A8B06211682C100290C02 /* SDWindow.m */,
 				4E2A8AF32116828500290C02 /* AppDelegate.h */,
