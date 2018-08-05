@@ -156,13 +156,20 @@ typedef enum
 {
     CGRect horizontalDistanceFrame = [self horizontalDistanceFrameBetweenLeftBorder:leftBorder
                                                                      andRightBorder:rightBorder];
-    CGRect topFrame = horizontalDistanceFrame.origin.y <= leftBorder.origin.y ? horizontalDistanceFrame : leftBorder;
-    CGRect bottomFrame = horizontalDistanceFrame.origin.y > leftBorder.origin.y ? horizontalDistanceFrame : leftBorder;
+    [self addDistanceViewWithFrame:horizontalDistanceFrame];
+    [self addBordersBetweenHorizontalDistanceViewFrame:horizontalDistanceFrame
+                                             andBorder:leftBorder];
+    [self addBordersBetweenHorizontalDistanceViewFrame:horizontalDistanceFrame
+                                             andBorder:rightBorder];
+}
+
+- (void)addBordersBetweenHorizontalDistanceViewFrame:(CGRect)horizontalDistanceViewFrame
+                                           andBorder:(CGRect)border
+{
+    CGRect topFrame = horizontalDistanceViewFrame.origin.y <= border.origin.y ? horizontalDistanceViewFrame : border;
+    CGRect bottomFrame = horizontalDistanceViewFrame.origin.y > border.origin.y ? horizontalDistanceViewFrame : border;
     CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
     CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
-    
-    [self addDistanceViewWithFrame:horizontalDistanceFrame];
-    
     if (topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y)
         [self addDistanceViewWithFrame:
          [self verticalDistanceFrameBetweenTopBorder:topFrameBottomBorder
