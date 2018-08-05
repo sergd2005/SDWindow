@@ -14,8 +14,23 @@
 		4E2A8B022116828500290C02 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E2A8AFA2116828500290C02 /* main.m */; };
 		4E2A8B032116828500290C02 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E2A8AFB2116828500290C02 /* AppDelegate.m */; };
 		4E2A8B042116828500290C02 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E2A8AFC2116828500290C02 /* Info.plist */; };
-		4E2A8B07211682C100290C02 /* SDWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E2A8B06211682C100290C02 /* SDWindow.m */; };
+		4E2A8B39211685F800290C02 /* SDWindowLib.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4E2A8B36211685F800290C02 /* SDWindowLib.h */; };
+		4E2A8B462116869B00290C02 /* SDWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E2A8B442116869B00290C02 /* SDWindow.m */; };
+		4E2A8B472116869F00290C02 /* SDWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E2A8B442116869B00290C02 /* SDWindow.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4E2A8B32211685F800290C02 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				4E2A8B39211685F800290C02 /* SDWindowLib.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4E2A8ABD2116821500290C02 /* SDWindow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDWindow.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -28,13 +43,23 @@
 		4E2A8AFB2116828500290C02 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		4E2A8AFC2116828500290C02 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4E2A8AFD2116828500290C02 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		4E2A8B05211682C100290C02 /* SDWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SDWindow.h; path = component/SDWindow.h; sourceTree = SOURCE_ROOT; };
-		4E2A8B06211682C100290C02 /* SDWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SDWindow.m; path = component/SDWindow.m; sourceTree = SOURCE_ROOT; };
 		4E2A8B082116850100290C02 /* notes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = notes.h; sourceTree = "<group>"; };
+		4E2A8B34211685F800290C02 /* libSDWindowLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDWindowLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E2A8B36211685F800290C02 /* SDWindowLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDWindowLib.h; sourceTree = "<group>"; };
+		4E2A8B37211685F800290C02 /* SDWindowLib.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDWindowLib.m; sourceTree = "<group>"; };
+		4E2A8B442116869B00290C02 /* SDWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWindow.m; sourceTree = "<group>"; };
+		4E2A8B452116869B00290C02 /* SDWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWindow.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		4E2A8ABA2116821500290C02 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E2A8B31211685F800290C02 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -47,7 +72,9 @@
 		4E2A8AB42116821500290C02 = {
 			isa = PBXGroup;
 			children = (
+				4E2A8B432116869B00290C02 /* component */,
 				4E2A8AF22116828500290C02 /* testapp */,
+				4E2A8B35211685F800290C02 /* SDWindowLib */,
 				4E2A8ABE2116821500290C02 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				4E2A8ABD2116821500290C02 /* SDWindow.app */,
+				4E2A8B34211685F800290C02 /* libSDWindowLib.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -64,8 +92,6 @@
 			isa = PBXGroup;
 			children = (
 				4E2A8B082116850100290C02 /* notes.h */,
-				4E2A8B05211682C100290C02 /* SDWindow.h */,
-				4E2A8B06211682C100290C02 /* SDWindow.m */,
 				4E2A8AF32116828500290C02 /* AppDelegate.h */,
 				4E2A8AF42116828500290C02 /* Assets.xcassets */,
 				4E2A8AF52116828500290C02 /* ViewController.m */,
@@ -77,6 +103,24 @@
 				4E2A8AFD2116828500290C02 /* ViewController.h */,
 			);
 			path = testapp;
+			sourceTree = "<group>";
+		};
+		4E2A8B35211685F800290C02 /* SDWindowLib */ = {
+			isa = PBXGroup;
+			children = (
+				4E2A8B36211685F800290C02 /* SDWindowLib.h */,
+				4E2A8B37211685F800290C02 /* SDWindowLib.m */,
+			);
+			path = SDWindowLib;
+			sourceTree = "<group>";
+		};
+		4E2A8B432116869B00290C02 /* component */ = {
+			isa = PBXGroup;
+			children = (
+				4E2A8B442116869B00290C02 /* SDWindow.m */,
+				4E2A8B452116869B00290C02 /* SDWindow.h */,
+			);
+			path = component;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -99,6 +143,23 @@
 			productReference = 4E2A8ABD2116821500290C02 /* SDWindow.app */;
 			productType = "com.apple.product-type.application";
 		};
+		4E2A8B33211685F800290C02 /* SDWindowLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4E2A8B3C211685F800290C02 /* Build configuration list for PBXNativeTarget "SDWindowLib" */;
+			buildPhases = (
+				4E2A8B30211685F800290C02 /* Sources */,
+				4E2A8B31211685F800290C02 /* Frameworks */,
+				4E2A8B32211685F800290C02 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SDWindowLib;
+			productName = SDWindowLib;
+			productReference = 4E2A8B34211685F800290C02 /* libSDWindowLib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -109,6 +170,9 @@
 				ORGANIZATIONNAME = sdsoft;
 				TargetAttributes = {
 					4E2A8ABC2116821500290C02 = {
+						CreatedOnToolsVersion = 9.4.1;
+					};
+					4E2A8B33211685F800290C02 = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
 				};
@@ -127,6 +191,7 @@
 			projectRoot = "";
 			targets = (
 				4E2A8ABC2116821500290C02 /* SDWindow */,
+				4E2A8B33211685F800290C02 /* SDWindowLib */,
 			);
 		};
 /* End PBXProject section */
@@ -150,10 +215,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4E2A8B07211682C100290C02 /* SDWindow.m in Sources */,
+				4E2A8B462116869B00290C02 /* SDWindow.m in Sources */,
 				4E2A8B022116828500290C02 /* main.m in Sources */,
 				4E2A8AFF2116828500290C02 /* ViewController.m in Sources */,
 				4E2A8B032116828500290C02 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E2A8B30211685F800290C02 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E2A8B472116869F00290C02 /* SDWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +394,28 @@
 			};
 			name = Release;
 		};
+		4E2A8B3A211685F800290C02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4E2A8B3B211685F800290C02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -338,6 +433,15 @@
 			buildConfigurations = (
 				4E2A8AEA2116821800290C02 /* Debug */,
 				4E2A8AEB2116821800290C02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4E2A8B3C211685F800290C02 /* Build configuration list for PBXNativeTarget "SDWindowLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E2A8B3A211685F800290C02 /* Debug */,
+				4E2A8B3B211685F800290C02 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
