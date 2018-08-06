@@ -188,14 +188,15 @@ typedef enum
     if (horizontalDistance ?
         border1.origin.x == border2.origin.x
         : border1.origin.y == border2.origin.y) return;
-    CGRect horizontalDistanceFrame = [self distanceFrameBetweenBorder1:border1
-                                                            andBorder2:border2
-                                                    horizontalDistance:horizontalDistance];
-    [self addDistanceViewWithFrame:horizontalDistanceFrame];
-    [self addBorderBetweenDistanceViewFrame:horizontalDistanceFrame
+    CGRect distanceFrame = [self distanceFrameBetweenBorder1:border1
+                                                  andBorder2:border2
+                                          horizontalDistance:horizontalDistance];
+    [self addDistanceViewWithFrame:distanceFrame
+                          guidance:NO];
+    [self addBorderBetweenDistanceViewFrame:distanceFrame
                                   andBorder:border1
                          horizontalDistance:horizontalDistance];
-    [self addBorderBetweenDistanceViewFrame:horizontalDistanceFrame
+    [self addBorderBetweenDistanceViewFrame:distanceFrame
                                   andBorder:border2
                          horizontalDistance:horizontalDistance];
 }
@@ -248,11 +249,12 @@ typedef enum
           bottomFrameTopBorder:&bottomFrameTopBorder];
     if (horizontalDistance ?
         topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y :
-        leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x )
+        leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x)
         [self addDistanceViewWithFrame:
          [self distanceFrameBetweenBorder1:!horizontalDistance ? leftFrameRightBorder : topFrameBottomBorder
                                 andBorder2:!horizontalDistance ? rightFrameLeftBorder : bottomFrameTopBorder
-                        horizontalDistance:!horizontalDistance]];
+                        horizontalDistance:!horizontalDistance]
+                              guidance:YES];
 }
 
 - (CGRect)distanceFrameBetweenBorder1:(CGRect)border1
@@ -350,11 +352,16 @@ typedef enum
 }
 
 - (void)addDistanceViewWithFrame:(CGRect)frame
+                        guidance:(BOOL)guidance
 {
     if (!self.distancesViews)
         self.distancesViews = [NSMutableArray new];
-    UIView *distanceView = [[UIView alloc] initWithFrame:frame];
-    distanceView.backgroundColor = UIColor.blueColor;
+    UIView *distanceView =
+    [[UIView alloc] initWithFrame:CGRectMake(frame.origin.x, frame.origin.y,
+                                             frame.size.width != 1.0f ? frame.size.width : guidance ? 1 : 4,
+                                             frame.size.height != 1.0f ? frame.size.height : guidance ? 1 : 4)];
+    distanceView.backgroundColor = guidance ? UIColor.greenColor :
+    frame.size.width == 1 ? UIColor.blueColor : UIColor.orangeColor;
     [self addSubview:distanceView];
     [self.distancesViews addObject:distanceView];
 }
