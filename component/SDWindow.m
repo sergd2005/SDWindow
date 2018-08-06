@@ -214,23 +214,38 @@ typedef enum
     *bottomFrame = frame1.origin.y > frame2.origin.y ? frame1 : frame2;
 }
 
-- (void)addBorderBetweenDistanceViewFrame:(CGRect)distanceViewFrame
-                                andBorder:(CGRect)border
-                       horizontalDistance:(BOOL)horizontalDistance
+- (void)innerBordersOfFrame1:(CGRect)frame1
+                   andFrame2:(CGRect)frame2
+        leftFrameRightBorder:(CGRect *)leftFrameRightBorder
+        rightFrameLeftBorder:(CGRect *)rightFrameLeftBorder
+        topFrameBottomBorder:(CGRect *)topFrameBottomBorder
+        bottomFrameTopBorder:(CGRect *)bottomFrameTopBorder
 {
+    
     CGRect leftFrame, rightFrame, topFrame, bottomFrame;
-    [self compareFrame1:distanceViewFrame
-              andFrame2:border
+    [self compareFrame1:frame1
+              andFrame2:frame2
               leftFrame:&leftFrame
              rightFrame:&rightFrame
                topFrame:&topFrame
             bottomFrame:&bottomFrame];
-    
-    CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
-    CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
-    CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
-    CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
-    
+    *leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
+    *rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
+    *topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
+    *bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
+}
+
+- (void)addBorderBetweenDistanceViewFrame:(CGRect)distanceViewFrame
+                                andBorder:(CGRect)border
+                       horizontalDistance:(BOOL)horizontalDistance
+{
+    CGRect leftFrameRightBorder, rightFrameLeftBorder, topFrameBottomBorder, bottomFrameTopBorder;
+    [self innerBordersOfFrame1:distanceViewFrame
+                     andFrame2:border
+          leftFrameRightBorder:&leftFrameRightBorder
+          rightFrameLeftBorder:&rightFrameLeftBorder
+          topFrameBottomBorder:&topFrameBottomBorder
+          bottomFrameTopBorder:&bottomFrameTopBorder];
     if (horizontalDistance ?
         topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y :
         leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x )
@@ -239,8 +254,6 @@ typedef enum
                                 andBorder2:!horizontalDistance ? rightFrameLeftBorder : bottomFrameTopBorder
                         horizontalDistance:!horizontalDistance]];
 }
-
-
 
 - (CGRect)distanceFrameBetweenBorder1:(CGRect)border1
                            andBorder2:(CGRect)border2
@@ -254,10 +267,13 @@ typedef enum
                topFrame:&topFrame
             bottomFrame:&bottomFrame];
     
-    CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
-    CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
-    CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
-    CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
+    CGRect leftFrameRightBorder, rightFrameLeftBorder, topFrameBottomBorder, bottomFrameTopBorder;
+    [self innerBordersOfFrame1:border1
+                     andFrame2:border2
+          leftFrameRightBorder:&leftFrameRightBorder
+          rightFrameLeftBorder:&rightFrameLeftBorder
+          topFrameBottomBorder:&topFrameBottomBorder
+          bottomFrameTopBorder:&bottomFrameTopBorder];
     
     CGFloat xPosition = horizontalDistance ? leftFrame.origin.x :
     (leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x ?
@@ -274,7 +290,6 @@ typedef enum
                       yPosition,
                       !horizontalDistance ? 1 : border2.origin.x - border1.origin.x,
                       horizontalDistance ? 1 : border2.origin.y - border1.origin.y);
-    
 }
 
 - (CGRect)borderRect:(SDBorderType)borderType fromRect:(CGRect)rect
