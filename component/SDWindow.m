@@ -192,6 +192,7 @@ typedef enum
                                                   andBorder2:border2
                                           horizontalDistance:horizontalDistance];
     [self addDistanceViewWithFrame:distanceFrame
+                        horizontal:horizontalDistance
                           guidance:NO];
     [self addBorderBetweenDistanceViewFrame:distanceFrame
                                   andBorder:border1
@@ -254,6 +255,7 @@ typedef enum
          [self distanceFrameBetweenBorder1:!horizontalDistance ? leftFrameRightBorder : topFrameBottomBorder
                                 andBorder2:!horizontalDistance ? rightFrameLeftBorder : bottomFrameTopBorder
                         horizontalDistance:!horizontalDistance]
+                            horizontal:!horizontalDistance
                               guidance:YES];
 }
 
@@ -352,16 +354,20 @@ typedef enum
 }
 
 - (void)addDistanceViewWithFrame:(CGRect)frame
+                      horizontal:(BOOL)horizontal
                         guidance:(BOOL)guidance
+
 {
     if (!self.distancesViews)
         self.distancesViews = [NSMutableArray new];
     UIView *distanceView =
-    [[UIView alloc] initWithFrame:CGRectMake(frame.origin.x, frame.origin.y,
-                                             frame.size.width != 1.0f ? frame.size.width : guidance ? 1 : 4,
-                                             frame.size.height != 1.0f ? frame.size.height : guidance ? 1 : 4)];
-    distanceView.backgroundColor = guidance ? UIColor.greenColor :
-    frame.size.width == 1 ? UIColor.blueColor : UIColor.orangeColor;
+    [[UIView alloc] initWithFrame:CGRectMake(frame.origin.x,
+                                             frame.origin.y,
+                                             horizontal ? frame.size.width : guidance ? 1 : 4,
+                                             !horizontal ? frame.size.height : guidance ? 1 : 4)];
+    distanceView.backgroundColor = guidance ? UIColor.lightGrayColor :
+    horizontal ? UIColor.blueColor : UIColor.orangeColor;
+    distanceView.tag = self.selectionViewTag;
     [self addSubview:distanceView];
     [self.distancesViews addObject:distanceView];
 }
