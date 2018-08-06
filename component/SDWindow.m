@@ -371,7 +371,9 @@ typedef enum
     distanceView.tag = self.selectionViewTag;
     [self addSubview:distanceView];
     [self.distancesViews addObject:distanceView];
-    if (!guidance)
+    if (!guidance &&
+        ((horizontal && (int)frame.size.width != 0) ||
+         (!horizontal && (int)frame.size.height != 0)))
     {
         UILabel *label = [[UILabel alloc] initWithFrame:
                           CGRectMake(frame.origin.x + (!horizontal ? 5 : 0),
@@ -385,6 +387,7 @@ typedef enum
         label.font = [UIFont fontWithName:@"AdobeClean-Light" size:14];
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = distanceView.backgroundColor;
+        label.backgroundColor = [UIColor.cyanColor colorWithAlphaComponent:0.9];
         [label sizeToFit];
         [self.distancesViews addObject:label];
         [self addSubview:label];
