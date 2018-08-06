@@ -199,8 +199,9 @@ typedef enum
                                      andRightBorder:(CGRect)rightBorder
 {
     if (leftBorder.origin.x == rightBorder.origin.x) return;
-    CGRect horizontalDistanceFrame = [self horizontalDistanceFrameBetweenLeftBorder:leftBorder
-                                                                     andRightBorder:rightBorder];
+    CGRect horizontalDistanceFrame = [self distanceFrameBetweenBorder1:leftBorder
+                                                                     andBorder2:rightBorder
+                                                    horizontalDistance:YES];
     [self addDistanceViewWithFrame:horizontalDistanceFrame];
     [self addBordersBetweenHorizontalDistanceViewFrame:horizontalDistanceFrame
                                              andBorder:leftBorder];
@@ -212,8 +213,9 @@ typedef enum
                                  andBottomBorder:(CGRect)bottomBorder
 {
     if (topBorder.origin.y == bottomBorder.origin.y) return;
-    CGRect verticalDistanceFrame = [self verticalDistanceFrameBetweenTopBorder:topBorder
-                                                               andBottomBorder:bottomBorder];
+    CGRect verticalDistanceFrame = [self distanceFrameBetweenBorder1:topBorder
+                                                               andBorder2:bottomBorder
+                                                  horizontalDistance:NO];
     [self addDistanceViewWithFrame:verticalDistanceFrame];
     [self addBordersBetweenVerticalDistanceViewFrame:verticalDistanceFrame
                                            andBorder:topBorder];
@@ -230,8 +232,9 @@ typedef enum
     CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
     if (leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x)
         [self addDistanceViewWithFrame:
-         [self horizontalDistanceFrameBetweenLeftBorder:leftFrameRightBorder
-                                         andRightBorder:rightFrameLeftBorder]];
+         [self distanceFrameBetweenBorder1:leftFrameRightBorder
+                                andBorder2:rightFrameLeftBorder
+                        horizontalDistance:YES]];
 }
 
 - (void)addBordersBetweenHorizontalDistanceViewFrame:(CGRect)horizontalDistanceViewFrame
@@ -243,44 +246,39 @@ typedef enum
     CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
     if (topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y)
         [self addDistanceViewWithFrame:
-         [self verticalDistanceFrameBetweenTopBorder:topFrameBottomBorder
-                                     andBottomBorder:bottomFrameTopBorder]];
+         [self distanceFrameBetweenBorder1:topFrameBottomBorder
+                                andBorder2:bottomFrameTopBorder
+                        horizontalDistance:NO]];
 }
 
-- (CGRect)verticalDistanceFrameBetweenTopBorder:(CGRect)topBorder
-                                andBottomBorder:(CGRect)bottomBorder
+- (CGRect)distanceFrameBetweenBorder1:(CGRect)border1
+                           andBorder2:(CGRect)border2
+                   horizontalDistance:(BOOL)horizontalDistance
 {
-    CGFloat xPosition = 0;
-    CGRect leftFrame = topBorder.origin.x < bottomBorder.origin.x ? topBorder : bottomBorder;
-    CGRect rightFrame = topBorder.origin.x > bottomBorder.origin.x ? topBorder : bottomBorder;
+    CGRect leftFrame = border1.origin.x < border2.origin.x ? border1 : border2;
+    CGRect rightFrame = border1.origin.x > border2.origin.x ? border1 : border2;
+    CGRect topFrame = border1.origin.y < border2.origin.y ? border1 : border2;
+    CGRect bottomFrame = border1.origin.y > border2.origin.y ? border1 : border2;
     CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
     CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
-    xPosition = leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x ?
-    ((rightFrameLeftBorder.origin.x - leftFrameRightBorder.origin.x)/2 +
-     leftFrameRightBorder.origin.x) :
-    rightFrameLeftBorder.origin.x;
-    return CGRectMake(xPosition,
-                      topBorder.origin.y,
-                      1,
-                      bottomBorder.origin.y - topBorder.origin.y);
-}
-
-- (CGRect)horizontalDistanceFrameBetweenLeftBorder:(CGRect)leftBorder
-                                    andRightBorder:(CGRect)rightBorder
-{
-    CGFloat yPosition = 0;
-    CGRect topFrame = leftBorder.origin.y < rightBorder.origin.y ? leftBorder : rightBorder;
-    CGRect bottomFrame = leftBorder.origin.y > rightBorder.origin.y ? leftBorder : rightBorder;
     CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
     CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
-    yPosition = topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y ?
-    ((bottomFrameTopBorder.origin.y - topFrameBottomBorder.origin.y)/2 +
-     topFrameBottomBorder.origin.y) :
-    bottomFrameTopBorder.origin.y;
-    return CGRectMake(leftBorder.origin.x,
+    CGFloat xPosition = horizontalDistance ? leftFrame.origin.x :
+    (leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x ?
+     ((rightFrameLeftBorder.origin.x - leftFrameRightBorder.origin.x)/2 +
+      leftFrameRightBorder.origin.x) :
+     rightFrameLeftBorder.origin.x);
+    CGFloat yPosition = horizontalDistance ?
+    (topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y ?
+     (bottomFrameTopBorder.origin.y - topFrameBottomBorder.origin.y)/2 +
+     topFrameBottomBorder.origin.y :
+     bottomFrameTopBorder.origin.y) :
+    border1.origin.y;
+    return CGRectMake(xPosition,
                       yPosition,
-                      rightBorder.origin.x - leftBorder.origin.x,
-                      1);
+                      !horizontalDistance ? 1 : border2.origin.x - border1.origin.x,
+                      horizontalDistance ? 1 : border2.origin.y - border1.origin.y);
+    
 }
 
 - (CGRect)borderRect:(SDBorderType)borderType fromRect:(CGRect)rect
