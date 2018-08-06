@@ -367,9 +367,28 @@ typedef enum
                                              !horizontal ? frame.size.height : guidance ? 1 : 4)];
     distanceView.backgroundColor = guidance ? UIColor.lightGrayColor :
     horizontal ? UIColor.blueColor : UIColor.orangeColor;
+    distanceView.alpha = 0.5;
     distanceView.tag = self.selectionViewTag;
     [self addSubview:distanceView];
     [self.distancesViews addObject:distanceView];
+    if (!guidance)
+    {
+        UILabel *label = [[UILabel alloc] initWithFrame:
+                          CGRectMake(frame.origin.x + (!horizontal ? 5 : 0),
+                                     frame.origin.y + (horizontal ? 5 : 0),
+                                     0,
+                                     0)];
+        label.tag = self.selectionViewTag;
+        label.text = [NSString stringWithFormat:@"%.2f",
+                      (horizontal ? frame.size.width : frame.size.height),
+                      nil];
+        label.font = [UIFont fontWithName:@"AdobeClean-Light" size:14];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = distanceView.backgroundColor;
+        [label sizeToFit];
+        [self.distancesViews addObject:label];
+        [self addSubview:label];
+    }
 }
 
 - (void)removeAllDistanceViews
