@@ -215,10 +215,10 @@ typedef enum
     CGRect verticalDistanceFrame = [self verticalDistanceFrameBetweenTopBorder:topBorder
                                                                andBottomBorder:bottomBorder];
     [self addDistanceViewWithFrame:verticalDistanceFrame];
-    [self addBordersBetweenHorizontalDistanceViewFrame:verticalDistanceFrame
-                                             andBorder:topBorder];
-    [self addBordersBetweenHorizontalDistanceViewFrame:verticalDistanceFrame
-                                             andBorder:bottomBorder];
+    [self addBordersBetweenVerticalDistanceViewFrame:verticalDistanceFrame
+                                           andBorder:topBorder];
+    [self addBordersBetweenVerticalDistanceViewFrame:verticalDistanceFrame
+                                           andBorder:bottomBorder];
 }
 
 - (void)addBordersBetweenVerticalDistanceViewFrame:(CGRect)verticalDistanceViewFrame
@@ -257,7 +257,7 @@ typedef enum
     CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
     xPosition = leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x ?
     ((rightFrameLeftBorder.origin.x - leftFrameRightBorder.origin.x)/2 +
-     rightFrameLeftBorder.origin.x) :
+     leftFrameRightBorder.origin.x) :
     rightFrameLeftBorder.origin.x;
     return CGRectMake(xPosition,
                       topBorder.origin.y,
