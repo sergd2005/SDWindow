@@ -117,12 +117,13 @@ typedef enum
                                andView2:(UIView *)view2
                      horizontalDistance:(BOOL)horizontalDistance
 {
-    CGRect frame1 = view1.frame;
-    CGRect frame2 = view2.frame;
-    CGRect topFrame = frame1.origin.y <= frame2.origin.y ? frame1 : frame2;
-    CGRect bottomFrame = frame1.origin.y > frame2.origin.y ? frame1 : frame2;
-    CGRect leftFrame = frame1.origin.x <= frame2.origin.x ? frame1 : frame2;
-    CGRect rightFrame = frame1.origin.x > frame2.origin.x ? frame1 : frame2;
+    CGRect leftFrame, rightFrame, topFrame, bottomFrame;
+    [self compareFrame1:view1.frame
+              andFrame2:view2.frame
+              leftFrame:&leftFrame
+             rightFrame:&rightFrame
+               topFrame:&topFrame
+            bottomFrame:&bottomFrame];
     
     CGRect topBorderOfTopFrame = [self borderRect:SDBorderTypeTop
                                          fromRect:topFrame];
@@ -199,14 +200,31 @@ typedef enum
                          horizontalDistance:horizontalDistance];
 }
 
+- (void)compareFrame1:(CGRect)frame1
+            andFrame2:(CGRect)frame2
+            leftFrame:(CGRect *)leftFrame
+           rightFrame:(CGRect *)rightFrame
+             topFrame:(CGRect *)topFrame
+          bottomFrame:(CGRect *)bottomFrame
+
+{
+    *leftFrame = frame1.origin.x < frame2.origin.x ? frame1 : frame2;
+    *rightFrame = frame1.origin.x > frame2.origin.x ? frame1 : frame2;
+    *topFrame = frame1.origin.y < frame2.origin.y ? frame1 : frame2;
+    *bottomFrame = frame1.origin.y > frame2.origin.y ? frame1 : frame2;
+}
+
 - (void)addBorderBetweenDistanceViewFrame:(CGRect)distanceViewFrame
                                 andBorder:(CGRect)border
                        horizontalDistance:(BOOL)horizontalDistance
 {
-    CGRect leftFrame = distanceViewFrame.origin.x <= border.origin.x ? distanceViewFrame : border;
-    CGRect rightFrame = distanceViewFrame.origin.x > border.origin.x ? distanceViewFrame : border;
-    CGRect topFrame = distanceViewFrame.origin.y <= border.origin.y ? distanceViewFrame : border;
-    CGRect bottomFrame = distanceViewFrame.origin.y > border.origin.y ? distanceViewFrame : border;
+    CGRect leftFrame, rightFrame, topFrame, bottomFrame;
+    [self compareFrame1:distanceViewFrame
+              andFrame2:border
+              leftFrame:&leftFrame
+             rightFrame:&rightFrame
+               topFrame:&topFrame
+            bottomFrame:&bottomFrame];
     
     CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
     CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
@@ -222,14 +240,19 @@ typedef enum
                         horizontalDistance:!horizontalDistance]];
 }
 
+
+
 - (CGRect)distanceFrameBetweenBorder1:(CGRect)border1
                            andBorder2:(CGRect)border2
                    horizontalDistance:(BOOL)horizontalDistance
 {
-    CGRect leftFrame = border1.origin.x < border2.origin.x ? border1 : border2;
-    CGRect rightFrame = border1.origin.x > border2.origin.x ? border1 : border2;
-    CGRect topFrame = border1.origin.y < border2.origin.y ? border1 : border2;
-    CGRect bottomFrame = border1.origin.y > border2.origin.y ? border1 : border2;
+    CGRect leftFrame, rightFrame, topFrame, bottomFrame;
+    [self compareFrame1:border1
+              andFrame2:border2
+              leftFrame:&leftFrame
+             rightFrame:&rightFrame
+               topFrame:&topFrame
+            bottomFrame:&bottomFrame];
     
     CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
     CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
