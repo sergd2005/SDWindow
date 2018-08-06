@@ -200,13 +200,15 @@ typedef enum
 {
     if (leftBorder.origin.x == rightBorder.origin.x) return;
     CGRect horizontalDistanceFrame = [self distanceFrameBetweenBorder1:leftBorder
-                                                                     andBorder2:rightBorder
+                                                            andBorder2:rightBorder
                                                     horizontalDistance:YES];
     [self addDistanceViewWithFrame:horizontalDistanceFrame];
-    [self addBordersBetweenHorizontalDistanceViewFrame:horizontalDistanceFrame
-                                             andBorder:leftBorder];
-    [self addBordersBetweenHorizontalDistanceViewFrame:horizontalDistanceFrame
-                                             andBorder:rightBorder];
+    [self addBorderBetweenDistanceViewFrame:horizontalDistanceFrame
+                                  andBorder:leftBorder
+                         horizontalDistance:YES];
+    [self addBorderBetweenDistanceViewFrame:horizontalDistanceFrame
+                                  andBorder:rightBorder
+                         horizontalDistance:YES];
 }
 
 - (void)addVerticalDistanceViewsBetweenTopBorder:(CGRect)topBorder
@@ -214,41 +216,38 @@ typedef enum
 {
     if (topBorder.origin.y == bottomBorder.origin.y) return;
     CGRect verticalDistanceFrame = [self distanceFrameBetweenBorder1:topBorder
-                                                               andBorder2:bottomBorder
+                                                          andBorder2:bottomBorder
                                                   horizontalDistance:NO];
     [self addDistanceViewWithFrame:verticalDistanceFrame];
-    [self addBordersBetweenVerticalDistanceViewFrame:verticalDistanceFrame
-                                           andBorder:topBorder];
-    [self addBordersBetweenVerticalDistanceViewFrame:verticalDistanceFrame
-                                           andBorder:bottomBorder];
+    [self addBorderBetweenDistanceViewFrame:verticalDistanceFrame
+                                  andBorder:topBorder
+                         horizontalDistance:NO];
+    [self addBorderBetweenDistanceViewFrame:verticalDistanceFrame
+                                  andBorder:bottomBorder
+                         horizontalDistance:NO];
 }
 
-- (void)addBordersBetweenVerticalDistanceViewFrame:(CGRect)verticalDistanceViewFrame
-                                         andBorder:(CGRect)border
+- (void)addBorderBetweenDistanceViewFrame:(CGRect)distanceViewFrame
+                                andBorder:(CGRect)border
+                       horizontalDistance:(BOOL)horizontalDistance
 {
-    CGRect leftFrame = verticalDistanceViewFrame.origin.x <= border.origin.x ? verticalDistanceViewFrame : border;
-    CGRect rightFrame = verticalDistanceViewFrame.origin.x > border.origin.x ? verticalDistanceViewFrame : border;
+    CGRect leftFrame = distanceViewFrame.origin.x <= border.origin.x ? distanceViewFrame : border;
+    CGRect rightFrame = distanceViewFrame.origin.x > border.origin.x ? distanceViewFrame : border;
+    CGRect topFrame = distanceViewFrame.origin.y <= border.origin.y ? distanceViewFrame : border;
+    CGRect bottomFrame = distanceViewFrame.origin.y > border.origin.y ? distanceViewFrame : border;
+    
     CGRect leftFrameRightBorder = [self borderRect:SDBorderTypeRight fromRect:leftFrame];
     CGRect rightFrameLeftBorder = [self borderRect:SDBorderTypeLeft fromRect:rightFrame];
-    if (leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x)
-        [self addDistanceViewWithFrame:
-         [self distanceFrameBetweenBorder1:leftFrameRightBorder
-                                andBorder2:rightFrameLeftBorder
-                        horizontalDistance:YES]];
-}
-
-- (void)addBordersBetweenHorizontalDistanceViewFrame:(CGRect)horizontalDistanceViewFrame
-                                           andBorder:(CGRect)border
-{
-    CGRect topFrame = horizontalDistanceViewFrame.origin.y <= border.origin.y ? horizontalDistanceViewFrame : border;
-    CGRect bottomFrame = horizontalDistanceViewFrame.origin.y > border.origin.y ? horizontalDistanceViewFrame : border;
     CGRect topFrameBottomBorder = [self borderRect:SDBorderTypeBottom fromRect:topFrame];
     CGRect bottomFrameTopBorder = [self borderRect:SDBorderTypeTop fromRect:bottomFrame];
-    if (topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y)
+    
+    if (horizontalDistance ?
+        topFrameBottomBorder.origin.y < bottomFrameTopBorder.origin.y :
+        leftFrameRightBorder.origin.x < rightFrameLeftBorder.origin.x )
         [self addDistanceViewWithFrame:
-         [self distanceFrameBetweenBorder1:topFrameBottomBorder
-                                andBorder2:bottomFrameTopBorder
-                        horizontalDistance:NO]];
+         [self distanceFrameBetweenBorder1:!horizontalDistance ? leftFrameRightBorder : topFrameBottomBorder
+                                andBorder2:!horizontalDistance ? rightFrameLeftBorder : bottomFrameTopBorder
+                        horizontalDistance:!horizontalDistance]];
 }
 
 - (CGRect)distanceFrameBetweenBorder1:(CGRect)border1
@@ -273,7 +272,7 @@ typedef enum
      (bottomFrameTopBorder.origin.y - topFrameBottomBorder.origin.y)/2 +
      topFrameBottomBorder.origin.y :
      bottomFrameTopBorder.origin.y) :
-    border1.origin.y;
+    topFrame.origin.y;
     return CGRectMake(xPosition,
                       yPosition,
                       !horizontalDistance ? 1 : border2.origin.x - border1.origin.x,
