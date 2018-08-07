@@ -372,8 +372,8 @@ typedef enum
     [self addSubview:distanceView];
     [self.distancesViews addObject:distanceView];
     if (!guidance &&
-        ((horizontal && (int)frame.size.width != 0) ||
-         (!horizontal && (int)frame.size.height != 0)))
+        ((horizontal && frame.size.width > 0.01f) ||
+         (!horizontal && frame.size.height > 0.01f)))
     {
         UILabel *label = [[UILabel alloc] initWithFrame:
                           CGRectMake(frame.origin.x + (!horizontal ? 5 : 0),
