@@ -145,8 +145,8 @@ typedef enum
     
     // case when frames do not intersect vertically
     if (horizontalDistance ?
-        rightBorderOfLeftFrame.origin.x <= leftBorderOfRightFrame.origin.x :
-        bottomBorderOfTopFrame.origin.y <= topBorderOfBottomFrame.origin.y)
+        rightBorderOfLeftFrame.origin.x < leftBorderOfRightFrame.origin.x :
+        bottomBorderOfTopFrame.origin.y < topBorderOfBottomFrame.origin.y)
     {
         // in that case we build single distance view between
         // rightBorderOfLeftFrame and leftBorderOfRightFrame
@@ -210,9 +210,9 @@ typedef enum
           bottomFrame:(CGRect *)bottomFrame
 
 {
-    *leftFrame = frame1.origin.x < frame2.origin.x ? frame1 : frame2;
+    *leftFrame = frame1.origin.x <= frame2.origin.x ? frame1 : frame2;
     *rightFrame = frame1.origin.x > frame2.origin.x ? frame1 : frame2;
-    *topFrame = frame1.origin.y < frame2.origin.y ? frame1 : frame2;
+    *topFrame = frame1.origin.y <= frame2.origin.y ? frame1 : frame2;
     *bottomFrame = frame1.origin.y > frame2.origin.y ? frame1 : frame2;
 }
 
